@@ -18,6 +18,7 @@
 @interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate>
 
 - (IBAction)didTapLogout:(id)sender;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
@@ -29,12 +30,17 @@
     [super viewDidLoad];
     
     //Need to describe datasource and delegate protocol in timeline vc interface definition
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    
+    [self.refreshControl addTarget:self action:@selector(beginRefresh:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
     [self fetchTweets];
-   
+    
+    
     // Get timeline
     
 }
@@ -43,11 +49,16 @@
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
         if (tweets) {
             NSLog(@"😎😎😎 Successfully loaded home timeline");
-            for (NSDictionary *dictionary in tweets) {
-                NSString *text = dictionary[@"text"];
-                NSLog(@"%@", text);
-            }
+            
             self.arrayOfTweets =  [Tweet tweetsWithArray:tweets];
+            
+            for (Tweet *tweet in self.arrayOfTweets) {
+                NSLog(@"%@", tweet.text);
+            }
+        NSLog(@"This is the number of tweeets: %d",[self.arrayOfTweets count]);
+            [self.tableView reloadData];
+            
+            [self.refreshControl endRefreshing];
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
@@ -69,7 +80,7 @@
 */
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSLog(@"%d",self.arrayOfTweets.count);
+    
     return self.arrayOfTweets.count;
 }
 
@@ -100,6 +111,12 @@
     [tweet.profilePicture setImageWithURL:url];
     
     return tweet;
+}
+- (void)beginRefresh:(UIRefreshControl *)refreshControl {
+
+        // Create NSURL and NSURLRequest
+
+    [self fetchTweets];
 }
 
 - (IBAction)didTapLogout:(id)sender {
