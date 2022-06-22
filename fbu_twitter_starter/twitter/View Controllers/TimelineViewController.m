@@ -13,14 +13,15 @@
 #import "TweetCell.h"
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
+#import "ComposeViewController.h"
 
-
-@interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate, tweetDelegate>
 
 - (IBAction)didTapLogout:(id)sender;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+- (void)finishTweet:(Tweet *)tweet;
 @end
 
 @implementation TimelineViewController
@@ -43,6 +44,11 @@
     
     // Get timeline
     
+}
+
+-(void)finishTweet:(Tweet *)tweet{
+    [self.arrayOfTweets insertObject:tweet atIndex:0];
+    [self.tableView reloadData];
 }
 
 -(void)fetchTweets{
