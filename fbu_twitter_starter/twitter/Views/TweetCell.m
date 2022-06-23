@@ -8,6 +8,7 @@
 
 #import "TweetCell.h"
 #import "APIManager.h"
+#import "DateTools.h"
 
 @implementation TweetCell
 
@@ -15,11 +16,6 @@
     [super awakeFromNib];
     // Initialization code
 }
-- (IBAction)testButtonTapped:(id)sender {
-
-    NSLog(@"Test");
-}
-
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -37,7 +33,22 @@
         
         NSLog(@"%d", self.tweet.favoriteCount);
         
-        [self refreshData:self.tweet.favorited];
+        [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
+        
+        [[APIManager shared] destroy:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error unfavoriting tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully unfavorited the following Tweet: %@", tweet.text);
+            }
+        }];
+    }
+    else{
+        self.tweet.favorited = YES;
+        self.tweet.favoriteCount += 1;
+        NSLog(@"%d", self.tweet.favoriteCount);
+        [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
         
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
@@ -48,51 +59,72 @@
             }
         }];
     }
-    else{
-        self.tweet.favorited = YES;
-        self.tweet.favoriteCount += 1;
-        NSLog(@"%d", self.tweet.favoriteCount);
-        [self refreshData:self.tweet.favorited];
+}
+
+- (IBAction)retweetButton:(id)sender {
+    
+    if(self.tweet.retweeted){
+        self.tweet.retweeted = NO;
+        self.tweet.retweetCount -= 1;
         
-        [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
+        
+        [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
+        
+        [[APIManager shared] unRetweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
-                 NSLog(@"Error unfavoriting tweet: %@", error.localizedDescription);
+                 NSLog(@"Error unretweeting tweet: %@", error.localizedDescription);
             }
             else{
-                NSLog(@"Successfully unfavorited the following Tweet: %@", tweet.text);
+                NSLog(@"Successfully unretweeting the following Tweet: %@", tweet.text);
+            }
+        }];
+    }
+    else{
+        self.tweet.retweeted = YES;
+        self.tweet.retweetCount += 1;
+        
+        [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
+        
+        [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error retweeted tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully retweeted the following Tweet: %@", tweet.text);
             }
         }];
     }
 }
 
-- (IBAction)retweetButton:(id)sender {
+-(void)refreshData:(BOOL)favorited wasRetweeted:(BOOL)retweeted{
     
+    UIImage *favoriteIcon = favorited ? [UIImage imageNamed:@"favor-icon-red.png"] : [UIImage imageNamed:@"favor-icon.png"];
     
-}
-
--(void)refreshData:(BOOL)favorited{
+    UIImage *retweetIcon = retweeted ? [UIImage imageNamed:@"retweet-icon-green.png"]: [UIImage imageNamed:@"retweet-icon.png"];
     
-    UIImage *newIcon = nil;
-    if(favorited){
-        newIcon = [UIImage imageNamed:@"favor-icon-red.png"];
-        NSLog(@"favor-icon-red.png");
-    }
-    else{
-        newIcon = [UIImage imageNamed:@"favor-icon.jpg"];
-        NSLog(@"favor-icon.png");
-    }
-    
-    self.likeButton.imageView.image = newIcon;
+    [self.likeButton setImage:favoriteIcon forState:UIControlStateNormal];
+    [self.retweetButton setImage:retweetIcon forState:UIControlStateNormal];
     
     NSString *faveCount = [NSString stringWithFormat:@"%i", self.tweet.favoriteCount];
     NSString *retweetedCount = [NSString stringWithFormat:@"%i", self.tweet.retweetCount];
     
-    NSLog(@"favecount,rtc b4: %@, %@",faveCount,retweetedCount);
     self.favoriteCount.text = faveCount;
     self.retweetCount.text = retweetedCount;
-//
-//    NSLog(@"favecount,rtc after: %@, %s",self.favoriteCount.text, self.retweetCount.text);
-    
-    
 }
+
+- (NSString* )shortTimeAgoSinceNow{
+    
+    NSInteger timeSinceHours = self.tweet.rawDate.hoursAgo;
+    NSInteger timeSinceMinutes = self.tweet.rawDate.minutesAgo;
+    
+    if(timeSinceMinutes < 60){
+        return [NSString stringWithFormat:@"%d m", (int)timeSinceMinutes];
+    }
+    else if(timeSinceHours < 24){
+        return [NSString stringWithFormat:@"%d h", (int)timeSinceHours];
+    }
+    
+    return @"too long";
+}
+
 @end

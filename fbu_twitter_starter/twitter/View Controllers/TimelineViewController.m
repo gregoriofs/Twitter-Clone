@@ -14,8 +14,10 @@
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
+#import "TweetDetailViewController.h"
 
-@interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate, tweetDelegate>
+
+@interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate, tweetDelegate, reloadDelegate>
 
 - (IBAction)didTapLogout:(id)sender;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -51,6 +53,22 @@
     [self.tableView reloadData];
 }
 
+-(void)finishedDetails:(NSIndexPath *)currentTweet{
+    
+    TweetCell *t = [self.tableView cellForRowAtIndexPath:currentTweet];
+    
+    UIImage *favoriteIcon = t.tweet.favorited ? [UIImage imageNamed:@"favor-icon-red.png"] : [UIImage imageNamed:@"favor-icon.png"];
+    
+    UIImage *retweetIcon = t.tweet.retweeted ? [UIImage imageNamed:@"retweet-icon-green.png"]: [UIImage imageNamed:@"retweet-icon.png"];
+    
+    [t.likeButton setImage:favoriteIcon forState:UIControlStateNormal];
+    [t.retweetButton setImage:retweetIcon forState:UIControlStateNormal];
+    
+    
+    t.favoriteCount.text = [NSString stringWithFormat:@"%d", t.tweet.favoriteCount];
+    t.retweetCount.text = [NSString stringWithFormat:@"%d", t.tweet.retweetCount];
+    
+}
 -(void)fetchTweets{
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
         if (tweets) {
@@ -77,9 +95,25 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    UINavigationController *navigationController = [segue destinationViewController];
-    ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
-    composeController.delegate = self;
+    
+    if(![[segue identifier]  isEqual: @"tweetDetails"]){
+        UINavigationController *navigationController = [segue destinationViewController];
+        ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
+        composeController.delegate = self;
+    }
+    else{
+        NSIndexPath *path = [self.tableView indexPathForCell:sender];
+        Tweet* nextTweet = self.arrayOfTweets[path.row];
+        
+        TweetDetailViewController *nextView = [segue destinationViewController];
+        
+        nextView.tweet = nextTweet;
+        nextView.currTweetPath = path;
+        
+        nextView.delegate = self;
+        
+    }
+   
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -95,8 +129,22 @@
     
     tweet.userName.text = tweetData.user.name;
     tweet.userHandle.text = tweetData.user.screenName;
-    tweet.tweetDate.text = tweetData.createdAtString;
+    
+    NSString* hoursFrom = [tweet shortTimeAgoSinceNow];
+    NSLog(@"%@", [NSString stringWithFormat:@"hoursfrom: %@ for tweet with text %@",hoursFrom,tweetData.text]);
+    
+    if([hoursFrom characterAtIndex:(hoursFrom.length-1)] == 'h' || [hoursFrom characterAtIndex:(hoursFrom.length-1)] == 'm'){
+        
+        tweet.tweetDate.text = hoursFrom;
+    }
+    else {
+        tweet.tweetDate.text = tweetData.createdAtString;
+    }
+    
     tweet.tweetText.text = tweetData.text;
+    
+    [tweet.tweetText sizeToFit];
+    
     NSString *rtCount = [NSString stringWithFormat:@"%i", tweetData.retweetCount];
     
     tweet.retweetCount.text = rtCount;
@@ -114,6 +162,31 @@
     tweet.profilePicture.layer.borderWidth = 2;
     
     tweet.tweet = tweetData;
+    
+    //Changing like buttont based on liked/unliked
+    
+    UIImage *newIcon = nil;
+    if(tweetData.favorited){
+        newIcon = [UIImage imageNamed:@"favor-icon-red.png"];
+    }
+    else{
+        newIcon = [UIImage imageNamed:@"favor-icon.png"];
+    }
+    
+    UIImage *retweetIcon = nil;
+    
+    if(tweetData.retweeted){
+        retweetIcon = [UIImage imageNamed:@"retweet-icon-green.png"];
+        
+    }
+    else{
+        retweetIcon = [UIImage imageNamed:@"retweet-icon.png"];
+    }
+    
+    [tweet.retweetButton setImage:retweetIcon forState:UIControlStateNormal];
+    [tweet.likeButton setImage:newIcon forState:UIControlStateNormal];
+    
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     return tweet;
 }
@@ -133,8 +206,7 @@
     LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     appDelegate.window.rootViewController = loginViewController;
     
-    
-    //
+
     [[APIManager shared]logout];
 }
 @end
