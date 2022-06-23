@@ -11,16 +11,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-
-@interface ComposeViewController : UIViewController
-
-@end
-
 @protocol tweetDelegate <NSObject>
 
 - (void)finishTweet:(Tweet *)tweet;
 
 @end
+
+@interface ComposeViewController : UIViewController
+
+@property (weak, nonatomic) id<tweetDelegate> delegate;
+
+@end
+
+
 
 NS_ASSUME_NONNULL_END

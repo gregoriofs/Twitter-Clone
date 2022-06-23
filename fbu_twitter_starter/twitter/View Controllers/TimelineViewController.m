@@ -60,6 +60,7 @@
             
             for (Tweet *tweet in self.arrayOfTweets) {
                 NSLog(@"%@", tweet.text);
+                NSLog(@"%@", tweet.user.profilePicture);
             }
         NSLog(@"This is the number of tweeets: %d",[self.arrayOfTweets count]);
             [self.tableView reloadData];
@@ -72,26 +73,20 @@
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    UINavigationController *navigationController = [segue destinationViewController];
+    ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
+    composeController.delegate = self;
 }
-*/
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     return self.arrayOfTweets.count;
 }
 
-// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     TweetCell *tweet = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
@@ -115,6 +110,10 @@
     NSData *urlData = [NSData dataWithContentsOfURL:url];
     
     [tweet.profilePicture setImageWithURL:url];
+    tweet.profilePicture.layer.borderColor = UIColor.blackColor.CGColor;
+    tweet.profilePicture.layer.borderWidth = 2;
+    
+    tweet.tweet = tweetData;
     
     return tweet;
 }
@@ -126,12 +125,16 @@
 }
 
 - (IBAction)didTapLogout:(id)sender {
+    
+    
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     appDelegate.window.rootViewController = loginViewController;
     
+    
+    //
     [[APIManager shared]logout];
 }
 @end

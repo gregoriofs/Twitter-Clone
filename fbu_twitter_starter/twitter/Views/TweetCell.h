@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tweet.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,9 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *tweetText;
 @property (weak, nonatomic) IBOutlet UILabel *retweetCount;
 @property (weak, nonatomic) IBOutlet UILabel *favoriteCount;
-- (IBAction)retweetButton:(id)sender;
-- (IBAction)favorite:(id)sender;
-@property (nonatomic, strong) NSString *tweet;
+@property (nonatomic, strong) Tweet *tweet;
+@property (weak, nonatomic) IBOutlet UIView *retweetButton;
+@property (weak, nonatomic) IBOutlet UIButton *likeButton;
+
+
 
 @end
 
