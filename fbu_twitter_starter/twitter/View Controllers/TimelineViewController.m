@@ -17,6 +17,7 @@
 #import "TweetDetailViewController.h"
 #import "DateTools.h"
 
+
 @interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate, tweetDelegate, reloadDelegate>
 
 - (IBAction)didTapLogout:(id)sender;
@@ -75,12 +76,7 @@
             NSLog(@"😎😎😎 Successfully loaded home timeline");
             
             self.arrayOfTweets =  [Tweet tweetsWithArray:tweets];
-            
-            for (Tweet *tweet in self.arrayOfTweets) {
-                NSLog(@"%@", tweet.text);
-                NSLog(@"%@", tweet.user.profilePicture);
-            }
-        NSLog(@"This is the number of tweeets: %d",self.arrayOfTweets.count);
+        
             [self.tableView reloadData];
             
             [self.refreshControl endRefreshing];
@@ -130,14 +126,9 @@
     tweet.userName.text = tweetData.user.name;
     tweet.userHandle.text = tweetData.user.screenName;
     
-    
-    
-    
     tweet.tweetDate.text = tweetData.rawDate.shortTimeAgoSinceNow;
     
     tweet.tweetText.text = tweetData.text;
-    
-    [tweet.tweetText sizeToFit];
     
     NSString *rtCount = [NSString stringWithFormat:@"%i", tweetData.retweetCount];
     
@@ -177,10 +168,12 @@
         retweetIcon = [UIImage imageNamed:@"retweet-icon.png"];
     }
     
+    
     [tweet.retweetButton setImage:retweetIcon forState:UIControlStateNormal];
     [tweet.likeButton setImage:newIcon forState:UIControlStateNormal];
     
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
     
     return tweet;
 }
