@@ -14,7 +14,7 @@
 
 
 
-@interface ComposeViewController ()
+@interface ComposeViewController () <UITextViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UIImageView *profilePic;
@@ -51,8 +51,21 @@
     
     [self.profilePic setImageWithURL:userPic];
     
+    self.textView.delegate = self;
     
     // Do any additional setup after loading the view.
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+    
+    int characterLimit = 140;
+    
+    NSString *newText = [self.textView.text stringByReplacingCharactersInRange:range withString:text];
+    
+    self.characterCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)newText.length];
+    
+    return newText.length < characterLimit;
+    
 }
 
 /*

@@ -465,11 +465,19 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wtu-dW-Sc1">
+                                <rect key="frame" x="256" y="374" width="69" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Uow-8e-cs8"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Uow-8e-cs8" firstAttribute="trailing" secondItem="Wkg-qQ-gnh" secondAttribute="trailing" constant="50" id="0nK-fb-zkY"/>
+                            <constraint firstItem="Wtu-dW-Sc1" firstAttribute="trailing" secondItem="uZ5-5G-3XC" secondAttribute="trailing" id="1RP-gy-of1"/>
+                            <constraint firstItem="Wtu-dW-Sc1" firstAttribute="top" secondItem="uZ5-5G-3XC" secondAttribute="bottom" constant="8" symbolic="YES" id="FN7-KM-Lx6"/>
                             <constraint firstItem="Wkg-qQ-gnh" firstAttribute="leading" secondItem="uZ5-5G-3XC" secondAttribute="leading" id="J2I-Gi-dcA"/>
                             <constraint firstItem="Wkg-qQ-gnh" firstAttribute="top" secondItem="Uow-8e-cs8" secondAttribute="top" constant="10" id="L56-VD-50V"/>
                             <constraint firstItem="Wkg-qQ-gnh" firstAttribute="top" secondItem="R4H-fv-094" secondAttribute="top" id="OEh-cc-vUM"/>
@@ -478,7 +486,9 @@
                             <constraint firstItem="Wkg-qQ-gnh" firstAttribute="trailing" secondItem="uZ5-5G-3XC" secondAttribute="trailing" id="bch-BN-Dx0"/>
                             <constraint firstItem="R4H-fv-094" firstAttribute="leading" secondItem="Uow-8e-cs8" secondAttribute="leading" constant="7" id="fu1-ul-AJP"/>
                             <constraint firstItem="Wkg-qQ-gnh" firstAttribute="leading" secondItem="R4H-fv-094" secondAttribute="trailing" constant="8" symbolic="YES" id="ksB-WN-3xO"/>
+                            <constraint firstItem="Wtu-dW-Sc1" firstAttribute="leading" secondItem="Uow-8e-cs8" secondAttribute="leading" constant="256" id="ogV-as-0CN"/>
                             <constraint firstItem="uZ5-5G-3XC" firstAttribute="top" secondItem="Wkg-qQ-gnh" secondAttribute="bottom" constant="24" id="qGF-tb-cnn"/>
+                            <constraint firstItem="Uow-8e-cs8" firstAttribute="bottom" secondItem="Wtu-dW-Sc1" secondAttribute="bottom" constant="244" id="qv4-E6-PMm"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="kZg-VP-YGg">
@@ -494,6 +504,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="characterCount" destination="Wtu-dW-Sc1" id="TA6-jh-tB2"/>
                         <outlet property="profilePic" destination="R4H-fv-094" id="LnF-DB-chK"/>
                         <outlet property="textView" destination="uZ5-5G-3XC" id="vAx-yU-ncm"/>
                     </connections>
