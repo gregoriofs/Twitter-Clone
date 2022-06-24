@@ -15,7 +15,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
 #import "TweetDetailViewController.h"
-
+#import "DateTools.h"
 
 @interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate, tweetDelegate, reloadDelegate>
 
@@ -80,7 +80,7 @@
                 NSLog(@"%@", tweet.text);
                 NSLog(@"%@", tweet.user.profilePicture);
             }
-        NSLog(@"This is the number of tweeets: %d",[self.arrayOfTweets count]);
+        NSLog(@"This is the number of tweeets: %d",self.arrayOfTweets.count);
             [self.tableView reloadData];
             
             [self.refreshControl endRefreshing];
@@ -130,16 +130,10 @@
     tweet.userName.text = tweetData.user.name;
     tweet.userHandle.text = tweetData.user.screenName;
     
-    NSString* hoursFrom = [tweet shortTimeAgoSinceNow];
-    NSLog(@"%@", [NSString stringWithFormat:@"hoursfrom: %@ for tweet with text %@",hoursFrom,tweetData.text]);
     
-    if([hoursFrom characterAtIndex:(hoursFrom.length-1)] == 'h' || [hoursFrom characterAtIndex:(hoursFrom.length-1)] == 'm'){
-        
-        tweet.tweetDate.text = hoursFrom;
-    }
-    else {
-        tweet.tweetDate.text = tweetData.createdAtString;
-    }
+    
+    
+    tweet.tweetDate.text = tweetData.rawDate.shortTimeAgoSinceNow;
     
     tweet.tweetText.text = tweetData.text;
     

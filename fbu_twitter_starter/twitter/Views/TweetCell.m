@@ -112,19 +112,5 @@
     self.retweetCount.text = retweetedCount;
 }
 
-- (NSString* )shortTimeAgoSinceNow{
-    
-    NSInteger timeSinceHours = self.tweet.rawDate.hoursAgo;
-    NSInteger timeSinceMinutes = self.tweet.rawDate.minutesAgo;
-    
-    if(timeSinceMinutes < 60){
-        return [NSString stringWithFormat:@"%d m", (int)timeSinceMinutes];
-    }
-    else if(timeSinceHours < 24){
-        return [NSString stringWithFormat:@"%d h", (int)timeSinceHours];
-    }
-    
-    return @"too long";
-}
 
 @end

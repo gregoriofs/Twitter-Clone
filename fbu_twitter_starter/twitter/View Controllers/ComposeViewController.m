@@ -38,8 +38,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.textView.layer.borderColor = UIColor.blackColor.CGColor;
+    self.textView.layer.borderColor = UIColor.blueColor.CGColor;
     self.textView.layer.borderWidth = 1;
+    
+    [[self.textView layer] setBorderWidth:1.5];
+    [[self.textView layer] setBorderColor:UIColor.blueColor.CGColor];
+    [[self.textView layer] setCornerRadius:5.0];
+    [self.textView sizeToFit];
     
     NSString *url = @"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
     NSURL *userPic = [NSURL URLWithString:url];

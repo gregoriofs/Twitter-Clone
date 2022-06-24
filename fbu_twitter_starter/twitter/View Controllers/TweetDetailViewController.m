@@ -23,7 +23,7 @@
     self.userName.text = self.tweet.user.name;
     self.userHandle.text = self.tweet.user.screenName;
     self.tweetText.text = self.tweet.text;
-    
+    [self.tweetText sizeToFit];
     
     NSString *faveCount = [NSString stringWithFormat:@"%d", self.tweet.favoriteCount];
     self.likeCount.text = faveCount;
@@ -45,7 +45,7 @@
     
     [self.profilePic setImageWithURL:userPic];
     
-    // Do any additional setup after loading the view.
+    
 }
 - (IBAction)likeButtonClick:(id)sender {
     NSLog(@"like button click works");
