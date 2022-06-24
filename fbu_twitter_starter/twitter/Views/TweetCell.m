@@ -24,14 +24,9 @@
 }
 - (IBAction)clickOnHeart:(id)sender {
     
-    NSLog(@"Tapped like button");
-    
-    
     if(self.tweet.favorited){
         self.tweet.favorited = NO;
         self.tweet.favoriteCount -= 1;
-        
-        NSLog(@"%d", self.tweet.favoriteCount);
         
         [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
         
@@ -47,7 +42,7 @@
     else{
         self.tweet.favorited = YES;
         self.tweet.favoriteCount += 1;
-        NSLog(@"%d", self.tweet.favoriteCount);
+        
         [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
         
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {

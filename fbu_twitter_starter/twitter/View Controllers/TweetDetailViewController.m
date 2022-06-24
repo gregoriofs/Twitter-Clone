@@ -23,7 +23,6 @@
     self.userName.text = self.tweet.user.name;
     self.userHandle.text = self.tweet.user.screenName;
     self.tweetText.text = self.tweet.text;
-    [self.tweetText sizeToFit];
     
     NSString *faveCount = [NSString stringWithFormat:@"%d", self.tweet.favoriteCount];
     self.likeCount.text = faveCount;
@@ -48,14 +47,10 @@
     
 }
 - (IBAction)likeButtonClick:(id)sender {
-    NSLog(@"like button click works");
     
     if(self.tweet.favorited){
         self.tweet.favorited = NO;
         self.tweet.favoriteCount -= 1;
-        
-        NSLog(@"%d", self.tweet.favoriteCount);
-        
         
         [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
         
@@ -71,7 +66,7 @@
     else{
         self.tweet.favorited = YES;
         self.tweet.favoriteCount += 1;
-        NSLog(@"%d", self.tweet.favoriteCount);
+        
         [self refreshData:self.tweet.favorited wasRetweeted:self.tweet.retweeted];
         
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
@@ -87,7 +82,7 @@
     
 }
 - (IBAction)retweetButtonClick:(id)sender {
-    NSLog(@"rt button click works");
+    
     if(self.tweet.retweeted){
         self.tweet.retweeted = NO;
         self.tweet.retweetCount -= 1;
