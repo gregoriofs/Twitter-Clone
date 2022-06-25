@@ -1,9 +1,9 @@
 
 # Project 2 - Twitter Clone
 
-**Name of your app** is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
+Twitter Clone is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: **X** hours spent in total
+Time spent: 20 hours spent in total
 
 ## User Stories
 
@@ -62,6 +62,7 @@ GIF created with [Kap](https://getkap.co/).
 
 Describe any challenges encountered while building the app.
 
+Working with the API was challenging at times as there were sometimes hard to understand errors. Additinally, the Layout of the views was hard to maintain constant sometimes as they had unexpected results. 
 ## Credits
 
 List an 3rd party libraries, icons, graphics, or other assets you used in your app.
